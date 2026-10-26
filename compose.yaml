@@ -1,0 +1,8 @@
+services:
+  studentmanagement:
+    image: studentmanagement
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8090:8090

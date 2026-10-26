@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Engineering College Admission Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f3f4f6; margin: 0; padding: 30px; color: #333; }
+        .wrapper { max-width: 1100px; margin: 0 auto; }
+        h2 { text-align: center; color: #1e3a8a; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        .card { background: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #2563eb; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        button:hover { background-color: #1d4ed8; }
+        .alert-error { background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: 5px; margin-bottom: 20px; font-weight: 500; text-align: center; }
+        .search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background-color: #f9fafb; color: #4b5563; }
+        .btn-delete { color: #dc2626; text-decoration: none; font-weight: 600; }
+        .btn-delete:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <h2>Engineering Admission System Portal</h2>
+
+    <!-- Error Alert Display Element -->
+    <div class="alert-error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <div class="grid-layout">
+        <div class="card">
+            <h3>Registration Form</h3>
+            <form th:action="@{/admission/register}" method="post">
+                <div class="form-group">
+                    <label>Application ID</label>
+                    <input type="text" name="id" placeholder="Ex: APP789" required>
+                </div>
+                <div class="form-group">
+                    <label>Student Full Name</label>
+                    <input type="text" name="name" placeholder="Ex: John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" name="age" required>
+                </div>
+                <div class="form-group">
+                    <label>Aggregate Marks (%)</label>
+                    <input type="number" step="0.01" name="marks" required>
+                </div>
+                <div class="form-group">
+                    <label>Engineering Stream</label>
+                    <select name="specialization">
+                        <option value="Computer Science & Engineering">Computer Science & Engineering</option>
+                        <option value="Electronics & Communication">Electronics & Communication</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                    </select>
+                </div>
+                <button type="submit">Submit Application</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Registered Candidate Roster</h3>
+            
+            <form th:action="@{/admission}" method="get" class="search-bar">
+                <input type="text" name="searchId" placeholder="Search by Application ID...">
+                <button type="submit" style="width: auto; background-color: #4b5563;">Search</button>
+                <a th:href="@{/admission}" style="align-self: center; color: #2563eb; text-decoration: none; font-size: 14px; margin-left: 5px;">Clear</a>
+            </form>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Marks</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="student : ${students}">
+                    <td th:text="${student.applicationId}"></td>
+                    <td th:text="${student.name}"></td>
+                    <td th:text="${student.age}"></td>
+                    <td th:text="${student.marks} + '%'"></td>
+                    <td>
+                        <a th:href="@{/admission/delete/{id}(id=${student.applicationId})}" class="btn-delete" onclick="return confirm('Discard application?');">Delete</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(students)}">
+                    <td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">No admission entries found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
